@@ -1,0 +1,17 @@
+name: rails_settings_cached_cr
+version: 0.1.0
+crystal: ">= 1.21.0"
+description: |
+  Порт rails-settings-cached 2.9.5 (huacnlee) на Crystal — 1:1 API.
+  Setting.field / cache_prefix / readonly / validates; кэш настроек через
+  ActiveSupport::Cache, хранение — ActiveRecord (таблица settings, YAML в
+  value совместим байт-в-байт с Ruby Psych).
+
+authors:
+  - oleg
+
+dependencies:
+  active_record_cr:
+    path: ../../rails.cr/active_record.cr
+  # active_support_cr приходит транзитивно через active_record_cr
+  # (прямая path-зависимость даёт "ambiguous sources" в shards).

@@ -1,0 +1,314 @@
+---
+- name: version
+  result: str:"2.9.5"
+- name: cache_key default
+  result: str:"rails-settings-cached/v1"
+- name: cache_prefix change
+  result: str:"rails-settings-cached/v2"
+- name: keys
+  result: arr[str:"host",str:"admin_emails",str:"captcha_enable",str:"user_limits",str:"tips",str:"default_tags",str:"default_value_with_block",str:"mailer_provider",str:"smtp_settings",str:"readonly_item",str:"readonly_item_with_proc",str:"omniauth_google_options",str:"string_item",str:"integer_item",str:"float_item",str:"big_decimal_item",str:"boolean_item",str:"array_item",str:"hash_item",str:"custom_item",str:"key_with_more_options",str:"fallback_field"]
+- name: editable_keys
+  result: arr[str:"host",str:"admin_emails",str:"captcha_enable",str:"user_limits",str:"tips",str:"default_tags",str:"default_value_with_block",str:"mailer_provider",str:"smtp_settings",str:"string_item",str:"integer_item",str:"float_item",str:"big_decimal_item",str:"boolean_item",str:"array_item",str:"hash_item",str:"custom_item",str:"key_with_more_options",str:"fallback_field"]
+- name: readonly_keys
+  result: arr[str:"readonly_item",str:"readonly_item_with_proc",str:"omniauth_google_options"]
+- name: 'get_field: host'
+  result: hash{str:"default"=>str:"http://example.com",str:"key"=>str:"host",str:"options"=>hash{},str:"readonly"=>bool:false,str:"scope"=>str:"application",str:"type"=>str:"string"}
+- name: 'get_field: omniauth'
+  result: hash{str:"default"=>hash{str:"client_id"=>str:"the-client-id",str:"client_secret"=>str:"the-client-secret"},str:"key"=>str:"omniauth_google_options",str:"options"=>hash{},str:"readonly"=>bool:true,str:"scope"=>str:"omniauth",str:"type"=>str:"hash"}
+- name: 'get_field: missing'
+  result: hash{}
+- name: 'get_field: options'
+  result: hash{str:"default"=>arr[str:"foo",str:"bar"],str:"key"=>str:"key_with_more_options",str:"options"=>hash{str:"foo"=>int:1,str:"section"=>str:"theme"},str:"readonly"=>bool:false,str:"scope"=>nil,str:"type"=>str:"array"}
+- name: 'default: string'
+  result: str:"http://example.com"
+- name: 'default: array'
+  result: arr[str:"admin@rubyonrails.org"]
+- name: 'default: boolean true'
+  result: bool:true
+- name: 'default: integer'
+  result: int:1
+- name: 'default: integer nil'
+  result: nil
+- name: 'default: float 7'
+  result: flt:7.0
+- name: 'default: float nil'
+  result: nil
+- name: 'default: array nil'
+  result: nil
+- name: 'default: hash nil'
+  result: nil
+- name: 'default: big_decimal 9'
+  result: dec:9.0
+- name: 'default: proc int'
+  result: int:2
+- name: 'default: proc readonly'
+  result: int:103
+- name: 'default: readonly int'
+  result: int:100
+- name: 'default: hash'
+  result: hash{str:"host"=>str:"foo.com",str:"password"=>str:"123456",str:"username"=>str:"foo@bar.com"}
+- name: 'default: hash readonly'
+  result: hash{str:"client_id"=>str:"the-client-id",str:"client_secret"=>str:"the-client-secret"}
+- name: 'default: fallback unknown type'
+  result: str:"hello"
+- name: 'default: array with options'
+  result: arr[str:"foo",str:"bar"]
+- name: 'default: no record in db'
+  result: nil
+- name: instance delegation
+  result: arr[str:"http://example.com",int:100,arr[]]
+- name: _all_settings empty
+  result: hash{}
+- name: integer = 12
+  result: int:12
+  value_column: "--- 12\n"
+- name: integer = "27"
+  result: int:27
+  value_column: "--- 27\n"
+- name: integer = 2.7
+  result: int:2
+  value_column: "--- 2\n"
+- name: integer = nil
+  result: nil
+  value_column: "---\n"
+- name: integer default after nil
+  error: 'ActiveRecord::RecordInvalid: Validation failed: User limits can''t be blank,
+    User limits must be numbers'
+- name: integer = 100
+  result: int:100
+  value_column: "--- 100\n"
+- name: string set
+  result: str:"https://www.example.com"
+  value_column: "--- https://www.example.com\n"
+- name: 'string yaml-ambiguous: true'
+  result: str:"true"
+  value_column: "--- 'true'\n"
+- name: 'string yaml-ambiguous: 42'
+  result: str:"42"
+  value_column: "--- '42'\n"
+- name: 'string yaml-ambiguous: 3.14'
+  result: str:"3.14"
+  value_column: "--- '3.14'\n"
+- name: 'string yaml-ambiguous: null'
+  result: str:"null"
+  value_column: "--- 'null'\n"
+- name: 'string yaml-ambiguous: ~'
+  result: str:"~"
+  value_column: '--- "~"
+
+    '
+- name: 'string yaml-ambiguous: yes'
+  result: str:"yes"
+  value_column: "--- 'yes'\n"
+- name: string empty
+  result: str:""
+  value_column: "--- ''\n"
+- name: string leading space
+  result: str:" hello"
+  value_column: '--- " hello"
+
+    '
+- name: string with colon+space
+  result: 'str:"a: b"'
+  value_column: "--- 'a: b'\n"
+- name: string with hash sign
+  result: 'str:"a #b"'
+  value_column: "--- 'a #b'\n"
+- name: float = 9
+  result: flt:9.0
+  value_column: "--- 9.0\n"
+- name: float = 2.9
+  result: flt:2.9
+  value_column: "--- 2.9\n"
+- name: float = "2.9"
+  result: flt:2.9
+  value_column: "--- 2.9\n"
+- name: float = nil then default
+  result: flt:7.0
+  value_column: "---\n"
+- name: big_decimal = 7
+  result: dec:7.0
+  value_column: "--- !ruby/object:BigDecimal 9:0.7e1\n"
+- name: big_decimal = 2.9
+  result: dec:2.9
+  value_column: "--- !ruby/object:BigDecimal 18:0.29e1\n"
+- name: big_decimal = "2.9"
+  result: dec:2.9
+  value_column: "--- !ruby/object:BigDecimal 18:0.29e1\n"
+- name: big_decimal = nil then default
+  result: dec:9.0
+  value_column: "---\n"
+- name: boolean = "0"
+  result: arr[bool:false,bool:false]
+  value_column: "--- false\n"
+- name: boolean = "1"
+  result: arr[bool:true,bool:true]
+  value_column: "--- true\n"
+- name: boolean = "false"
+  result: bool:false
+  value_column: "--- false\n"
+- name: boolean = "true"
+  result: bool:true
+  value_column: "--- true\n"
+- name: boolean = 0
+  result: bool:false
+  value_column: "--- false\n"
+- name: boolean = 1
+  result: bool:true
+  value_column: "--- true\n"
+- name: boolean = "yes"
+  result: bool:false
+  value_column: "--- false\n"
+- name: array = list
+  result: arr[str:"admin@rubyonrails.org",str:"huacnlee@gmail.com"]
+  value_column: |
+    ---
+    - admin@rubyonrails.org
+    - huacnlee@gmail.com
+- name: array = join newline
+  result: arr[str:"admin@rubyonrails.org",str:"huacnlee@gmail.com"]
+  value_column: |
+    ---
+    - admin@rubyonrails.org
+    - huacnlee@gmail.com
+- name: array = join comma
+  result: arr[str:"admin@rubyonrails.org",str:"huacnlee@gmail.com"]
+  value_column: |
+    ---
+    - admin@rubyonrails.org
+    - huacnlee@gmail.com
+- name: array = join semicolon
+  result: arr[str:"admin@rubyonrails.org",str:"huacnlee@gmail.com"]
+  value_column: |
+    ---
+    - admin@rubyonrails.org
+    - huacnlee@gmail.com
+- name: array = join ' , '
+  result: arr[str:"admin@rubyonrails.org",str:"huacnlee@gmail.com"]
+  value_column: |
+    ---
+    - admin@rubyonrails.org
+    - huacnlee@gmail.com
+- name: array = empty string
+  result: arr[]
+  value_column: "--- []\n"
+- name: array = nil
+  result: nil
+  value_column: "---\n"
+- name: hash = string keys
+  result: hash{str:"foo"=>str:"bar"}
+  value_column: |
+    ---
+    foo: bar
+- name: hash = symbol keys
+  result: hash{str:"foo"=>str:"bar"}
+  value_column: |
+    ---
+    :foo: bar
+- name: hash = nested
+  result: hash{str:"a"=>hash{str:"b"=>str:"c"}}
+  value_column: |
+    ---
+    a:
+      b: c
+- name: hash = array value
+  result: hash{str:"a"=>arr[str:"x",str:"y"]}
+  value_column: |
+    ---
+    a:
+    - x
+    - "y"
+- name: hash = empty
+  result: hash{}
+  value_column: "--- {}\n"
+- name: hash = mixed types
+  result: hash{str:"age"=>int:32,str:"name"=>str:"Jason Lee",str:"title"=>str:"456"}
+  value_column: |
+    ---
+    title: '456'
+    age: 32
+    name: Jason Lee
+- name: hash = symbol value
+  result: hash{str:"num"=>flt:27.72,str:"str"=>str:"string",str:"sym"=>str:"symbol"}
+  value_column: |
+    ---
+    sym: :symbol
+    str: string
+    num: 27.72
+- name: hash = nil
+  result: nil
+  value_column: "---\n"
+- name: hash from json string in db
+  result: hash{str:"num"=>flt:27.72,str:"sym"=>str:"symbol"}
+- name: custom = 2
+  result: int:2
+  value_column: "--- b\n"
+- name: custom = 3
+  result: int:3
+  value_column: "--- c\n"
+- name: custom = 4 raises
+  error: 'StandardError: invalid value'
+- name: db string → array
+  result: arr[str:"foo@gmail.com",str:"bar@dar.com",str:"aaa@bbb.com"]
+- name: db string → integer
+  result: int:100
+- name: db string → boolean false
+  result: bool:false
+- name: db string → boolean true
+  result: bool:true
+- name: db yaml string → integer
+  result: int:0
+- name: 'db string separators: tips'
+  result: arr[str:"Hello this is first line, and have comma.",str:"This is second
+    line."]
+- name: 'db string separators: default_tags'
+  result: arr[str:"Ruby",str:"Rails",str:"GitHub"]
+- name: _all_settings after save
+  result: hash{str:"host"=>str:"https://example.com"}
+- name: cache storage default is Rails.cache
+  result: bool:true
+- name: custom cache storage used
+  result: arr[str:"rails-settings-cached/v1"]
+- name: clear_cache deletes cache entry
+  result: arr[]
+- name: after_commit clears cache
+  result: arr[]
+- name: request cache disabled by default
+  result: nil
+- name: request cache enable/disable
+  result: arr[bool:true,bool:false,nil,nil]
+- name: readonly setter raises
+  error: 'NoMethodError: undefined method ''readonly_item='' for class Setting'
+- name: readonly hash setter raises
+  error: 'NoMethodError: undefined method ''omniauth_google_options='' for class Setting'
+- name: not exist field raises
+  error: 'NoMethodError: undefined method ''not_exist_method'' for class Setting'
+- name: protected key var
+  error: 'RailsSettings::ProtectedKeyError: Can''t use var as setting key.'
+- name: protected key value
+  error: 'RailsSettings::ProtectedKeyError: Can''t use value as setting key.'
+- name: no table fallback to default
+  result: str:"Hello world"
+- name: no table defined_keys
+  result: arr[str:"foo"]
+- name: validation host blank
+  result: arr[bool:false,arr[str:"Host can't be blank"]]
+- name: validation host ok
+  result: arr[bool:true,arr[]]
+- name: validation user_limits blank
+  result: arr[bool:false,arr[str:"User limits can't be blank",str:"User limits must
+    be numbers"]]
+- name: validation user_limits format
+  result: arr[bool:false,arr[str:"User limits must be numbers"]]
+- name: validation user_limits ok
+  result: arr[bool:true,arr[]]
+- name: validation mailer_provider blank
+  result: arr[bool:false,arr[str:"Mailer provider can't be blank",str:"Mailer provider
+    is not included in the list"]]
+- name: validation assignment host raises
+  error: 'ActiveRecord::RecordInvalid: Validation failed: Host can''t be blank'
+- name: validation assignment host ok
+  result: str:"foo"
+- name: validation assignment mailer raises
+  error: 'ActiveRecord::RecordInvalid: Validation failed: Mailer provider is not included
+    in the list'

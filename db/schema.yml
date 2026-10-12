@@ -1,0 +1,46 @@
+# Спецификация таблиц для compile-time кодогенерации active_record_cr
+# (модели шарда читают db/schema.yml из корня запуска).
+settings:
+  columns:
+  - name: id
+    type: int8
+    nullable: 'NO'
+    default: nextval('settings_id_seq'::regclass)
+  - name: var
+    type: varchar
+    nullable: 'NO'
+    default:
+  - name: value
+    type: text
+    nullable: 'YES'
+    default:
+  - name: created_at
+    type: timestamp
+    nullable: 'YES'
+    default:
+  - name: updated_at
+    type: timestamp
+    nullable: 'YES'
+    default:
+not-exist-settings:
+  columns:
+  - name: id
+    type: int8
+    nullable: 'NO'
+    default: nextval('settings_id_seq'::regclass)
+  - name: var
+    type: varchar
+    nullable: 'NO'
+    default:
+  - name: value
+    type: text
+    nullable: 'YES'
+    default:
+  - name: created_at
+    type: timestamp
+    nullable: 'YES'
+    default:
+  - name: updated_at
+    type: timestamp
+    nullable: 'YES'
+    default:
