@@ -12,6 +12,10 @@ authors:
 
 dependencies:
   active_record_cr:
-    path: ../../rails.cr/active_record.cr
-  # active_support_cr приходит транзитивно через active_record_cr
-  # (прямая path-зависимость даёт "ambiguous sources" в shards).
+    github: OrelSokolov/active_record.cr
+    version: ~> 0.1.0
+  # Используется напрямую (ActiveSupport::Cache) — объявляем явно;
+  # источник совпадает с транзитивным через active_record_cr.
+  active_support_cr:
+    github: OrelSokolov/active_support.cr
+    version: ~> 0.1.0
